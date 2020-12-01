@@ -2361,7 +2361,7 @@ void BaseRealSenseNode::publishFrame(rs2::frame f, const ros::Time& t,
         img->is_bigendian = false;
         img->step = width * bpp;
         img->header.frame_id = optical_frame_id.at(stream);
-        img->header.stamp = t;
+        img->header.stamp = ros::Time(f.get_timestamp() / /*ms to seconds*/ 1000);
         img->header.seq = seq[stream];
 
         auto& cam_info = camera_info.at(stream);
@@ -2369,7 +2369,7 @@ void BaseRealSenseNode::publishFrame(rs2::frame f, const ros::Time& t,
         {
             updateStreamCalibData(f.get_profile().as<rs2::video_stream_profile>());
         }
-        cam_info.header.stamp = t;
+        cam_info.header.stamp = ros::Time(f.get_timestamp() / /*ms to seconds*/ 1000);
         cam_info.header.seq = seq[stream];
         info_publisher.publish(cam_info);
 
